@@ -3,7 +3,7 @@ import "./Auth.css";
 import Button from "../../components/UI/Button/Button.js";
 import Input from "../../components/UI/Input/Input.js";
 import is from "is_js";
-
+import axios from "axios";
 export default class Auth extends Component {
   state = {
     isFormValid: false,
@@ -35,9 +35,42 @@ export default class Auth extends Component {
     },
   };
 
-  loginHandler = () => {};
+  loginHandler = async () => {
+    const authData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true,
+    };
+    try {
+      const response = await axios.post(
+        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCZQKtLW2Xv2VNvTSL58QD3S6YHMX7SK5I",
+        authData
+      );
 
-  registerHandler = () => {};
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+
+  registerHandler = async () => {
+    const authData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true,
+    };
+    try {
+      const response = await axios.post(
+        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCZQKtLW2Xv2VNvTSL58QD3S6YHMX7SK5I",
+        authData
+      );
+
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   submitHandler = (event) => {
     event.preventDefault();
