@@ -9,6 +9,7 @@ import {
 import Input from "../../components/UI/Input/Input.js";
 import Auxiliary from "../../hoc/layout/Auxiliary/Auxiliary.js";
 import Select from "../../components/UI/Select/Select.js";
+import axios from "../../axios/axios-quiz/axios-quiz.js";
 
 function createOptionControl(number) {
   return createControl(
@@ -92,11 +93,24 @@ export default class QuizCreator extends Component {
     });
   };
 
-  createQuizHandler = (event) => {
+  createQuizHandler = async (event) => {
     event.preventDefault();
 
-    console.log(this.state.quiz);
-    //TODO Server
+    try {
+      await axios.post(
+        "/quizes.json",
+        this.state.quiz
+      );
+
+      this.setState({
+        quiz: [],
+        isFormValid: false,
+        rightAnswerId: 1,
+        formControls: createFormControls(),
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   changeHandler = (value, controlName) => {
