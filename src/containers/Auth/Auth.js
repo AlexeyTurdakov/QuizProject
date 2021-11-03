@@ -3,8 +3,9 @@ import "./Auth.css";
 import Button from "../../components/UI/Button/Button.js";
 import Input from "../../components/UI/Input/Input.js";
 import is from "is_js";
-import axios from "axios";
-export default class Auth extends Component {
+import { auth } from "../../store/actions/auth.js";
+import { connect } from "react-redux";
+class Auth extends Component {
   state = {
     isFormValid: false,
     formControls: {
@@ -35,41 +36,20 @@ export default class Auth extends Component {
     },
   };
 
-  loginHandler = async () => {
-    const authData = {
-      email: this.state.formControls.email.value,
-      password: this.state.formControls.password.value,
-      returnSecureToken: true,
-    };
-    try {
-      const response = await axios.post(
-        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCZQKtLW2Xv2VNvTSL58QD3S6YHMX7SK5I",
-        authData
-      );
-
-      console.log(response.data);
-    } catch (e) {
-      console.log(e);
-    }
+  loginHandler = () => {
+    this.props.auth(
+      this.state.formControls.email.value,
+      this.state.formControls.password.value,
+      true
+    );
   };
 
-
-  registerHandler = async () => {
-    const authData = {
-      email: this.state.formControls.email.value,
-      password: this.state.formControls.password.value,
-      returnSecureToken: true,
-    };
-    try {
-      const response = await axios.post(
-        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCZQKtLW2Xv2VNvTSL58QD3S6YHMX7SK5I",
-        authData
-      );
-
-      console.log(response.data);
-    } catch (e) {
-      console.log(e);
-    }
+  registerHandler = () => {
+    this.props.auth(
+      this.state.formControls.email.value,
+      this.state.formControls.password.value,
+      false
+    );
   };
 
   submitHandler = (event) => {
@@ -144,6 +124,7 @@ export default class Auth extends Component {
       <div className='Auth'>
         <div>
           <h1>Авторизация</h1>
+
           <form onSubmit={this.submitHandler} className='AuthForm'>
             {this.renderInputs()}
 
@@ -154,6 +135,7 @@ export default class Auth extends Component {
             >
               Войти
             </Button>
+
             <Button
               type='primary'
               onClick={this.registerHandler}
@@ -167,3 +149,12 @@ export default class Auth extends Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    auth: (email, password, isLogin) =>
+      dispatch(auth(email, password, isLogin)),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Auth);
